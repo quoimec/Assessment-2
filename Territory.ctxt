@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Territory
+comment0.text=\n\ Write\ a\ description\ of\ class\ Territory\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=passedColumn\ passedRow
+comment1.target=Territory(int,\ int)
+comment2.params=
+comment2.target=java.lang.String\ toString()
+comment3.params=selectedPlayer\ numberArmies
+comment3.target=void\ placeArmies(Player,\ int)
+numComments=4
