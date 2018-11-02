@@ -7,6 +7,8 @@ public class Player {
     
     private String name;
     private int unplacedArmies;
+    private int turn = 0;
+    private int territories = 0;
     
     public Player() {
         
@@ -26,10 +28,41 @@ public class Player {
         
     }
     
-    public void placeArmies(int numberArmies) {
+    public void addArmies() {
+        unplacedArmies++;
+    }
     
-        unplacedArmies -= numberArmies;
-        
+    public void placeArmies() {
+        unplacedArmies--;
+    }
+    
+    public int getArmies() {
+         return unplacedArmies;  
+    }
+    
+    public int getSetTerritories() {
+        unplacedArmies = territories;
+        return territories;
+    }
+    
+    public int getTerritories() {
+        return territories;
+    }
+    
+    public void addTerritory() {
+        territories++;
+    }
+    
+    public void removeTerritory() {
+        territories--;
+    }
+    
+    public int getTurn() {
+        return turn;
+    }
+    
+    public void endTurn() {
+        turn++;
     }
 
 }

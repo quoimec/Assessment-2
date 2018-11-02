@@ -26,36 +26,242 @@ public class World {
     }
     
     public String toString() {
-    
-        return territory1.toString() + " " + territory2.toString() + " " + territory3.toString() + " " + territory4.toString(); 
+        
+        String outputString = "";
+        Territory eachTerritory;
+        String beginingString = "";
+        
+        for (int x = 1; x <= 4; x++) {
+        
+            if (x > 1) {
+                beginingString = " ";
+            }
+            
+            switch(x) {
+            
+                case 1:
+                eachTerritory = territory1;
+                break;
+                
+                case 2:
+                eachTerritory = territory2;
+                break;
+                
+                case 3:
+                eachTerritory = territory3;
+                break;
+                
+                default:
+                eachTerritory = territory4;
+                break;
+            
+            }
+            
+            outputString += beginingString + eachTerritory.toString();
+            
+        }
+        
+        return outputString; 
         
     }
     
-    public void placeArmies(Player selectedPlayer, Territory selectedTerritory) {
+    public int getArmies(Player selectedPlayer) {
+        return selectedPlayer.getArmies();
+    }
+    
+    public void placeArmies(Player selectedPlayer) {
         
-        System.out.print("How many armies would you like to place on " + selectedTerritory.toString() + "? ");
-        int numberArmies = keyboard.nextInt();
+        messageOutput("You have " + getArmies(selectedPlayer) + " armies to place.");
         
-        selectedTerritory.placeArmies(selectedPlayer, numberArmies);
-        selectedPlayer.placeArmies(numberArmies);
+        while (getArmies(selectedPlayer) > 0) {
         
-        System.out.println(toString());
+            Territory selectedTerritory = selectTerritory();
+            selectedTerritory.placeArmies(selectedPlayer);
+            System.out.println(toString());
+        
+        }
         
     }
     
-    public void mainSetup() {
-    
-        System.out.println(player1.toString() + ", please place your armies");
-        System.out.println(toString());
-        placeArmies(player1, territory1);
-        placeArmies(player1, territory2);
-        
-        System.out.println(player2.toString() + ", please place your armies");
-        System.out.println(toString());
-        placeArmies(player2, territory3);
-        placeArmies(player2, territory4);
-    
-    }
+    public void transfer(Player selectedPlayer) {
 
+        messageOutput("Select source/target territories for a transfer.");
+
+        while (true) {
+
+            Territory sourceTerritory = selectTerritory();
+
+            if (sourceTerritory == null) {
+                break;
+            } else if (!validTransferSource(sourceTerritory, selectedPlayer)) {
+                continue;
+            }
+
+            Territory destinationTerritory = selectTerritory();
+            
+            if (destinationTerritory.validTransferDestination(selectedPlayer)) {
+
+                sourceTerritory.sourceTransfer();
+                System.out.println(toString());
+
+            }
+
+        }
+
+    }
+    
+    public void attack(Player selectedPlayer) {
+        
+        messageOutput("Select source/target territories for an attack.");
+        
+        Territory sourceTerritory;
+        Territory destinationTerritory;
+        
+        while (true) {
+        
+            sourceTerritory = selectTerritory();
+            
+            if (sourceTerritory == null) {
+                return;
+            } else if (validTransferSource(sourceTerritory, selectedPlayer)) {
+                
+                while (true) {
+                
+                    destinationTerritory = selectTerritory();
+                    
+                    if (destinationTerritory == null) {
+                        return;
+                    } else {
+                    
+                        Player destinationPlayer = destinationTerritory.currentOwner();
+                        
+                        if (destinationPlayer == selectedPlayer) {
+                            sourceTerritory = destinationTerritory;
+                            continue;
+                        } else if (destinationPlayer != null) {
+                            
+                           sourceTerritory.executeAttack();
+                           destinationTerritory.executeAttack();
+                           System.out.println(toString());
+                            
+                           if (sourceTerritory.isEmpty()) {
+                               break;
+                           } 
+                            
+                        }
+                    
+                    }
+                
+                }
+                
+            }
+        
+        }
+        
+    }
+    
+    public Boolean validTransferSource(Territory transferDestination, Player transferPlayer) {
+    
+        return transferDestination.currentOwner() == transferPlayer;
+    
+    }
+    
+    public Territory selectTerritory() {
+    
+        System.out.print("Select a territory: ");
+        
+        int columnIndex = keyboard.nextInt();
+        
+        if (columnIndex < 0) {
+        
+            return null;
+            
+        }
+        
+        int rowIndex = keyboard.nextInt();
+        
+        int calculatedIndex = rowIndex * 3 + columnIndex;
+        
+        switch (calculatedIndex) {
+        
+            case 0:
+            return territory1;
+            
+            case 1:
+            return territory2;
+            
+            case 3:
+            return territory3;
+            
+            case 4:
+            return territory4;
+            
+            default:
+            return null;
+        
+        }
+        
+    }
+    
+    public void messageOutput(String passedMessage) {
+        System.out.println(passedMessage);
+        System.out.println(toString());
+    }
+    
+    public void turn(Player selectedPlayer) {
+    
+        String playerName = selectedPlayer.toString();
+        
+        System.out.println(playerName + "'s turn.");
+        int currentTurn = selectedPlayer.getTurn();
+        
+        if (currentTurn > 0) {
+        
+            int ownedTerritories = selectedPlayer.getSetTerritories();
+            System.out.println("Giving " + ownedTerritories + " new armies to " + playerName);
+            
+        
+        }
+        
+        placeArmies(selectedPlayer);
+        
+        if (0 < currentTurn) {
+        
+            attack(selectedPlayer);
+            transfer(selectedPlayer);
+        
+        }
+        
+        selectedPlayer.endTurn();
+    
+    }
+    
+    public void mainGame() {
+    
+        for (int i = 1; i > 0; i++) {
+        
+            Player selectedPlayer;
+            Player opposingPlayer;
+            
+            if (i % 2 == 0) {
+                selectedPlayer = player2;
+                opposingPlayer = player1;
+            } else {
+                selectedPlayer = player1;
+                opposingPlayer = player2;
+            }
+            
+            turn(selectedPlayer);
+            
+            if (opposingPlayer.getTerritories() == 0 && i >= 3) {
+                System.out.println(selectedPlayer.toString() + " wins! ");
+                break;
+            }
+        
+        }
+    
+    }
+    
+    
     
 }

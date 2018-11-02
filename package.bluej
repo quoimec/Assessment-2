@@ -1,6 +1,6 @@
 #BlueJ package file
-dependency1.from=Territory
-dependency1.to=Player
+dependency1.from=Main
+dependency1.to=World
 dependency1.type=UsesDependency
 dependency2.from=World
 dependency2.to=Territory
@@ -8,11 +8,11 @@ dependency2.type=UsesDependency
 dependency3.from=World
 dependency3.to=Player
 dependency3.type=UsesDependency
-dependency4.from=Main
-dependency4.to=World
+dependency4.from=Territory
+dependency4.to=Player
 dependency4.type=UsesDependency
-editor.fx.0.height=0
-editor.fx.0.width=0
+editor.fx.0.height=800
+editor.fx.0.width=1280
 editor.fx.0.x=0
 editor.fx.0.y=0
 objectbench.height=101

@@ -20,19 +20,73 @@ public class Territory {
     
     public String toString() {
         
+        String ownerName;
+        
         if (owner == null) {
-            return "[" + column + "," + row + "]" + owner + "(" + armies + ")";
+            ownerName = "null";
         } else {
-            return "[" + column + "," + row + "]" + owner.toString() + "(" + armies + ")";
+            ownerName = owner.toString();
+        }
+        
+        return "[" + column + "," + row + "]" + ownerName + "(" + armies + ")";
+        
+    }
+    
+    public void placeArmies(Player selectedPlayer) {
+    
+        if (owner == null) {
+            owner = selectedPlayer;
+            selectedPlayer.addTerritory();
+        } 
+        
+        if (owner == selectedPlayer) {
+            selectedPlayer.placeArmies();
+            armies++;
         }
         
     }
     
-    public void placeArmies(Player selectedPlayer, int numberArmies) {
-    
-        owner = selectedPlayer;
-        armies += numberArmies;
+    public Player currentOwner() {
+        return owner;
+    }
+   
+    public Boolean validTransferDestination(Player selectedPlayer) {
+
+        if (owner == null) {
+            owner = selectedPlayer;
+        } else if (owner != selectedPlayer) {
+            return false;
+        }
+        
+        armies++;
+        return true;
         
     }
+    
+    public void executeAttack() {
+    
+        if (armies == 1) {
+            owner.removeTerritory(); 
+        }
+            
+        sourceTransfer();
+    
+    }
+    
+    public void sourceTransfer() {
 
+        armies--;
+
+        if (armies == 0) {
+            owner = null;
+        }
+
+    }
+    
+    public Boolean isEmpty() {
+        return owner == null;
+    }
+
+    
+    
 }
